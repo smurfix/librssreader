@@ -1,6 +1,9 @@
-libgreader is written and maintained by Matthew Behrens and various contributors:
+librssreader is written and maintained by Zigler Zhang and various contributors:
 
-Development Lead
+Developer
+- Zigler Zhang <zigler.zhang@gmail.com>
+
+Original Developer
 
 - Matthew Behrens <askedrelic@gmail.com>
 

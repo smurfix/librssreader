@@ -1,5 +1,11 @@
 #History
 
+##v0.1.0 - not yet publish 
+- Make API domain configurable
+- Support Inoreader API by default
+
+# History of libgreader
+
 ##v0.8.0 - 
 - Make API endpoint configurable
 
