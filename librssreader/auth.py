@@ -8,12 +8,6 @@ from requests.compat import urlencode, urlparse
 import time
 
 try:
-    import json
-except:
-    # Python 2.6 support
-    import simplejson as json
-
-try:
     import oauth2 as oauth
     has_oauth = True
 except:
@@ -25,8 +19,9 @@ try:
 except:
     has_httplib2 = False
 
-from .googlereader import GoogleReader
-from .url import ReaderUrl
+from .rssreadertools import getBasicConfig
+ReaderBasicConfig = getBasicConfig()
+
 
 def toUnicode(obj, encoding='utf-8'):
     return obj
@@ -34,6 +29,7 @@ def toUnicode(obj, encoding='utf-8'):
     #     if not isinstance(obj, unicode):
     #         obj = unicode(obj, encoding)
     # return obj
+
 
 class AuthenticationMethod(object):
     """
@@ -58,7 +54,6 @@ class ClientAuthMethod(AuthenticationMethod):
     """
     Auth type which requires a valid Google Reader username and password
     """
-    CLIENT_URL = 'https://www.google.com/accounts/ClientLogin'
 
     def __init__(self, username, password):
         super(ClientAuthMethod, self).__init__()
@@ -105,7 +100,7 @@ class ClientAuthMethod(AuthenticationMethod):
             'Email'       : self.username,
             'Passwd'      : self.password,
             'accountType' : 'GOOGLE'}
-        req = requests.post(ClientAuthMethod.CLIENT_URL, data=parameters)
+        req = requests.post(ReaderBasicConfig.CLIENT_URL, data=parameters)
         if req.status_code != 200:
             raise IOError("Error getting the Auth token, have you entered a"
                     "correct username and password?")
@@ -122,7 +117,7 @@ class ClientAuthMethod(AuthenticationMethod):
         Returns token or raises IOError on error.
         """
         headers = {'Authorization':'GoogleLogin auth=%s' % self.auth_token}
-        req = requests.get(ReaderUrl.API_URL + 'token', headers=headers)
+        req = requests.get(ReaderBasicConfig.API_URL + 'token', headers=headers)
         if req.status_code != 200:
             raise IOError("Error getting the Reader token.")
         return req.content
@@ -131,11 +126,11 @@ class OAuthMethod(AuthenticationMethod):
     """
     Loose wrapper around OAuth2 lib. Kinda awkward.
     """
-    GOOGLE_URL        = 'https://www.google.com/accounts/'
-    REQUEST_TOKEN_URL = (GOOGLE_URL + 'OAuthGetRequestToken?scope=%s' %
-                         ReaderUrl.READER_BASE_URL)
-    AUTHORIZE_URL     = GOOGLE_URL + 'OAuthAuthorizeToken'
-    ACCESS_TOKEN_URL  = GOOGLE_URL + 'OAuthGetAccessToken'
+    REQUEST_TOKEN_URL = (
+        ReaderBasicConfig.OATH_URL + 'OAuthGetRequestToken?scope=%s' %
+        ReaderBasicConfig.READER_BASE_URL)
+    AUTHORIZE_URL = ReaderBasicConfig.OATH_URL + 'OAuthAuthorizeToken'
+    ACCESS_TOKEN_URL  = ReaderBasicConfig.OATH_URL + 'OAuthGetAccessToken'
 
     def __init__(self, consumer_key, consumer_secret):
         if not has_oauth:
@@ -231,18 +226,13 @@ class OAuthMethod(AuthenticationMethod):
         else:
             raise IOError("No authorized client available.")
 
+
 class OAuth2Method(AuthenticationMethod):
     '''
     Google OAuth2 base method.
     '''
-    GOOGLE_URL = 'https://accounts.google.com'
-    AUTHORIZATION_URL = GOOGLE_URL + '/o/oauth2/auth'
-    ACCESS_TOKEN_URL = GOOGLE_URL + '/o/oauth2/token'
-    SCOPE = [
-        'https://www.googleapis.com/auth/userinfo.email',
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.google.com/reader/api/',
-    ]
+    AUTHORIZATION_URL = ReaderBasicConfig.OATH_URL + '/o/oauth2/auth'
+    ACCESS_TOKEN_URL = ReaderBasicConfig.OATH_URL + '/o/oauth2/token'
 
     def __init__(self, client_id, client_secret):
         super(OAuth2Method, self).__init__()
@@ -262,7 +252,7 @@ class OAuth2Method(AuthenticationMethod):
         args = {
             'client_id': self.client_id,
             'redirect_uri': self.redirect_uri,
-            'scope': ' '.join(self.SCOPE),
+            'scope': ' '.join(ReaderBasicConfig.OATH_SCOPE),
             'response_type': 'code',
         }
         return self.AUTHORIZATION_URL + '?' + urlencode(args)
@@ -274,7 +264,7 @@ class OAuth2Method(AuthenticationMethod):
 
         TODO: mask token expiring? handle regenerating?
         '''
-        self.action_token = self.get(ReaderUrl.ACTION_TOKEN_URL)
+        self.action_token = self.get(ReaderBasicConfig.ACTION_TOKEN_URL)
 
     def setAccessToken(self):
         params = {
@@ -376,7 +366,7 @@ class GAPDecoratorAuthMethod(AuthenticationMethod):
         Implement libgreader's interface for authenticated POST request
         """
         if self._action_token == None:
-            self._action_token = self.get(ReaderUrl.ACTION_TOKEN_URL)
+            self._action_token = self.get(ReaderBasicConfig.ACTION_TOKEN_URL)
 
         if self._http == None:
             self._setupHttp()

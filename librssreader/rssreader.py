@@ -7,24 +7,26 @@ try:
 except:
     import simplejson as json
 
-from .url import ReaderUrl
 from .items import SpecialFeed, Item, Category, Feed
+from .rssreadertools import getBasicConfig
+ReaderBasicConfig = getBasicConfig()
 
-class GoogleReader(object):
+
+class RssReader(object):
     """
-    Class for using the unofficial Google Reader API and working with
+    Class for using the unofficial Google Reader Like API and working with
     the data it returns.
 
     Requires valid google username and password.
     """
     def __repr__(self):
-        return "<Google Reader object: %s>" % self.auth.username
+        return "<Rss Reader object: %s>" % self.auth.username
 
     def __str__(self):
         return unicode(self).encode('utf-8')
 
     def __unicode__(self):
-        return "<Google Reader object: %s>" % self.auth.username
+        return "<Rss Reader object: %s>" % self.auth.username
 
     def __init__(self, auth):
         self.auth           = auth
@@ -65,7 +67,7 @@ class GoogleReader(object):
         return self.categories
 
     def makeSpecialFeeds(self):
-        for type in ReaderUrl.SPECIAL_FEEDS:
+        for type in ReaderBasicConfig.SPECIAL_FEEDS:
             self.specialFeeds[type] = SpecialFeed(self, type)
 
     def getSpecialFeed(self, type):
@@ -83,12 +85,12 @@ class GoogleReader(object):
         if not self.userId:
             self.getUserInfo()
 
-        unreadJson = self.httpGet(ReaderUrl.UNREAD_COUNT_URL, { 'output': 'json', })
+        unreadJson = self.httpGet(ReaderBasicConfig.UNREAD_COUNT_URL, { 'output': 'json', })
         unreadCounts = json.loads(unreadJson, strict=False)['unreadcounts']
         for unread in unreadCounts:
             unreadById[unread['id']] = unread['count']
 
-        feedsJson = self.httpGet(ReaderUrl.SUBSCRIPTION_LIST_URL, { 'output': 'json', })
+        feedsJson = self.httpGet(ReaderBasicConfig.SUBSCRIPTION_LIST_URL, { 'output': 'json', })
         subscriptions = json.loads(feedsJson, strict=False)['subscriptions']
 
         for sub in subscriptions:
@@ -181,7 +183,7 @@ class GoogleReader(object):
 
     def _modifyItemTag(self, item_id, action, tag):
         """ wrapper around actual HTTP POST string for modify tags """
-        return self.httpPost(ReaderUrl.EDIT_TAG_URL,
+        return self.httpPost(ReaderBasicConfig.EDIT_TAG_URL,
                              {'i': item_id, action: tag, 'ac': 'edit-tags'})
 
     def removeItemTag(self, item, tag):
@@ -219,7 +221,7 @@ class GoogleReader(object):
             for tag in self.addTagBacklog:
                 itemIds = [item['i'] for item in self.addTagBacklog[tag]]
                 feedIds = [item['s'] for item in self.addTagBacklog[tag]]
-                self.httpPost(ReaderUrl.EDIT_TAG_URL,
+                self.httpPost(ReaderBasicConfig.EDIT_TAG_URL,
                     {'i': itemIds, 'a': tag, 'ac': 'edit-tags', 's': feedIds})
             self.addTagBacklog = {}
             self.inItemTagTransaction = False
@@ -229,7 +231,7 @@ class GoogleReader(object):
 
     def markFeedAsRead(self, feed):
         return self.httpPost(
-            ReaderUrl.MARK_ALL_READ_URL,
+            ReaderBasicConfig.MARK_ALL_READ_URL,
             {'s': feed.id, })
 
     def subscribe(self, feedUrl):
@@ -242,7 +244,7 @@ class GoogleReader(object):
         returns True or throws HTTPError
         """
         response = self.httpPost(
-            ReaderUrl.SUBSCRIPTION_EDIT_URL,
+            ReaderBasicConfig.SUBSCRIPTION_EDIT_URL,
             {'ac':'subscribe', 's': feedUrl})
         # FIXME - need better return API
         if response and 'OK' in response:
@@ -260,7 +262,7 @@ class GoogleReader(object):
         returns True or throws HTTPError
         """
         response = self.httpPost(
-            ReaderUrl.SUBSCRIPTION_EDIT_URL,
+            ReaderBasicConfig.SUBSCRIPTION_EDIT_URL,
             {'ac':'unsubscribe', 's': feedUrl})
         # FIXME - need better return API
         if response and 'OK' in response:
@@ -272,7 +274,7 @@ class GoogleReader(object):
         """
         Returns a dictionary of user info that google stores.
         """
-        userJson = self.httpGet(ReaderUrl.USER_INFO_URL)
+        userJson = self.httpGet(ReaderBasicConfig.USER_INFO_URL)
         result = json.loads(userJson, strict=False)
         self.userId = result['userId']
         return result

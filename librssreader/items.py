@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from requests.compat import quote
+from .rssreadertools import getBasicConfig
+ReaderBasicConfig = getBasicConfig()
 
-from .url import ReaderUrl
 
 class ItemsContainer(object):
     """
@@ -116,7 +117,7 @@ class Category(ItemsContainer):
 
         self.feeds  = []
 
-        self.fetchUrl = ReaderUrl.CATEGORY_URL + Category.urlQuote(self.label)
+        self.fetchUrl = ReaderBasicConfig.CATEGORY_URL + Category.urlQuote(self.label)
 
     def _addFeed(self, feed):
         if not feed in self.feeds:
@@ -211,18 +212,18 @@ class SpecialFeed(BaseFeed):
     """
     def __init__(self, googleReader, type):
         """
-        type is one of ReaderUrl.SPECIAL_FEEDS
+        type is one of ReaderBasicConfig.SPECIAL_FEEDS
         """
         super(SpecialFeed, self).__init__(
             googleReader,
             title      = type,
-            id         = ReaderUrl.SPECIAL_FEEDS_PART_URL+type,
+            id         = ReaderBasicConfig.SPECIAL_FEEDS_PART_URL+type,
             unread     = 0,
             categories = [],
         )
         self.type = type
 
-        self.fetchUrl = ReaderUrl.CONTENT_BASE_URL + Category.urlQuote(self.id)
+        self.fetchUrl = ReaderBasicConfig.CONTENT_BASE_URL + Category.urlQuote(self.id)
 
 class Feed(BaseFeed):
     """
@@ -242,7 +243,7 @@ class Feed(BaseFeed):
         self.feedUrl = self.id.lstrip('feed/')
         self.siteUrl = siteUrl
 
-        self.fetchUrl = ReaderUrl.FEED_URL + Category.urlQuote(self.id)
+        self.fetchUrl = ReaderBasicConfig.FEED_URL + Category.urlQuote(self.id)
 
 class Item(object):
     """
@@ -329,9 +330,9 @@ class Item(object):
         self.parent.markItemRead(self, read)
         self.read = read
         if read:
-            result = self.googleReader.addItemTag(self, ReaderUrl.TAG_READ)
+            result = self.googleReader.addItemTag(self, ReaderBasicConfig.TAG_READ)
         else:
-            result = self.googleReader.removeItemTag(self, ReaderUrl.TAG_READ)
+            result = self.googleReader.removeItemTag(self, ReaderBasicConfig.TAG_READ)
         return result.upper() == 'OK'
 
     def markUnread(self, unread=True):
@@ -343,9 +344,9 @@ class Item(object):
     def markShared(self, shared=True):
         self.shared = shared
         if shared:
-            result = self.googleReader.addItemTag(self, ReaderUrl.TAG_SHARED)
+            result = self.googleReader.addItemTag(self, ReaderBasicConfig.TAG_SHARED)
         else:
-            result = self.googleReader.removeItemTag(self, ReaderUrl.TAG_SHARED)
+            result = self.googleReader.removeItemTag(self, ReaderBasicConfig.TAG_SHARED)
         return result.upper() == 'OK'
 
     def share(self):
@@ -360,9 +361,9 @@ class Item(object):
     def markStarred(self, starred=True):
         self.starred = starred
         if starred:
-            result = self.googleReader.addItemTag(self, ReaderUrl.TAG_STARRED)
+            result = self.googleReader.addItemTag(self, ReaderBasicConfig.TAG_STARRED)
         else:
-            result = self.googleReader.removeItemTag(self, ReaderUrl.TAG_STARRED)
+            result = self.googleReader.removeItemTag(self, ReaderBasicConfig.TAG_STARRED)
         return result.upper() == 'OK'
 
     def star(self):

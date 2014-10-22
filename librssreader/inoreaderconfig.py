@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-class ReaderUrl(object):
-    READER_BASE_URL        = 'https://www.google.com/reader/api'
+
+class ReaderBasicConfig(object):
+    READER_BASE_URL        = 'https://www.inoreader.com/reader/api'
     API_URL                = READER_BASE_URL + '/0/'
 
     ACTION_TOKEN_URL       = API_URL + 'token'
@@ -35,3 +36,11 @@ class ReaderUrl(object):
     TAG_SHARED             = 'user/-/state/com.google/broadcast'
 
     MARK_ALL_READ_URL      = API_URL + 'mark-all-as-read'
+
+    CLIENT_URL = 'https://www.inoreader.com/accounts/ClientLogin'
+    OATH_URL        = 'https://www.inoreader.com/accounts/'
+    OATHSCOPE = [
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.inoreader.com/reader/api/',
+    ]

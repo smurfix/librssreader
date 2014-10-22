@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
-import libgreader
+import librssreader
 
 setup(
-    name             = 'libgreader',
-    version          = libgreader.__version__,
-    description      = 'Library for working with the Google Reader API',
+    name             = 'librssreader',
+    version          = librssreader.__version__,
+    description      = 'Library for working with the Google Reader Like API',
     long_description = open('README.md').read() + '\n\n' + open('HISTORY.md').read(),
 
-    author           = libgreader.__author__,
-    author_email     = 'askedrelic@gmail.com',
-    url              = 'https://github.com/askedrelic/libgreader',
+    author           = librssreader.__author__,
+    author_email     = 'zigler.zhang@gmail.com',
+    url              = 'https://github.com/fireinice/librssreader',
     license          = open("LICENSE.txt").read(),
 
     install_requires = ['requests>=1.0',],
 
-    packages         = ['libgreader'],
+    packages         = ['librssreader'],
     test_suite       = 'tests',
 
     classifiers      = (
