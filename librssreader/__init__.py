@@ -15,6 +15,7 @@ except ImportError:
     pass
 else:
     import imp
+    from .theoldreader import *
     from .rssreader import RssReader
     from .auth import AuthenticationMethod, ClientAuthMethod, OAuthMethod, OAuth2Method
     from .items import *
