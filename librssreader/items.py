@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import time
 from requests.compat import quote
 from .rssreadertools import getBasicConfig
 ReaderBasicConfig = getBasicConfig()
@@ -267,7 +268,10 @@ class Item(object):
         self.id     = item['id']
         self.title  = item.get('title', '(no title)')
         self.author = item.get('author', None)
-        self.content = item.get('content', item.get('summary', {})).get('content', '')
+        self.content = item.get('content', item.get('summary', {}))
+        if (isinstance(self.content, dict)):
+            self.content = self.content.get('content', '')
+
         self.origin  = { 'title': '', 'url': ''}
         if 'crawlTimeMsec' in item:
             self.time = int(item['crawlTimeMsec']) // 1000
@@ -295,6 +299,10 @@ class Item(object):
                 self.shared = True
 
         self.canUnread = item.get('isReadStateLocked', 'false') != 'true'
+        self.published = item.get('published', '')
+        if self.published and self.published != '':
+            self.published = time.strftime('%m/%d %H:%M',
+                                           time.localtime(self.published))
 
         # keep feed, can be used when item is fetched from a special feed, then it's the original one
         try:

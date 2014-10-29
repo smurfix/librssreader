@@ -215,7 +215,6 @@ class RssReader(object):
         else:
             return self._modifyItemTag(item.id, 'a', tag)
 
-    
     def commitAddItemTagTransaction(self):
         if self.inItemTagTransaction:
             for tag in self.addTagBacklog:
