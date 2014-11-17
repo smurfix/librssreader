@@ -35,6 +35,10 @@ or
 
 	$ easy_install librssreader
 
+## Note
+
+The old reader config now *DO NOT* well test and may not work. It now only is an example for how to extend the library to other rssreaders. Any contribution will be appreciated.
+
 ## Testing and Contribution
 
 Want to test it out or contribute some changes?
