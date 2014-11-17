@@ -17,11 +17,11 @@ Licensed under the MIT license: [http://www.opensource.org/licenses/mit-license.
 It's as simple as:
 
 
-	>>> from libgreader import GoogleReader, ClientAuthMethod, Feed
+	>>> from librssreader.inoreader import RssReader, ClientAuthMethod, Item
 	>>> auth = ClientAuthMethod('YOUR USERNAME','YOUR PASSWORD')
-	>>> reader = GoogleReader(auth)
+	>>> reader = RssReader(auth)
 	>>> print reader.getUserInfo()
-	{u'userName': u'Foo', u'userEmail': u'libgreadertest@gmail.com', u'userId': u'16058940398976999581', u'userProfileId': u'100275409503040726101', u'isBloggerUser': False, u'signupTimeSec': 0, u'isMultiLoginEnabled': False}`
+	{u'userName': u'Foo', u'userEmail': u'librssreadertest@gmail.com', u'userId': u'16058940398976999581', u'userProfileId': u'100275409503040726101', u'isBloggerUser': False, u'signupTimeSec': 0, u'isMultiLoginEnabled': False}`
 
 For more examples with all of the authentication methods, see the [USAGE file](https://github.com/askedrelic/libgreader/blob/master/USAGE.md).
 
@@ -29,11 +29,11 @@ For more examples with all of the authentication methods, see the [USAGE file](h
 
 libgreader is on pypi at [http://pypi.python.org/pypi/libgreader/](http://pypi.python.org/pypi/libgreader/)
 
-	$ pip install libgreader
+	$ pip install librssreader
 
 or 
 
-	$ easy_install libgreader
+	$ easy_install librssreader
 
 ## Testing and Contribution
 
@@ -43,7 +43,7 @@ First, fork the repository on Github to make changes on your private branch.
 Then, create a dev environment using a virtualenv:
 
 	$ pip install virtualenvwrapper
-	$ mkvirtualenv venv-libgreader --no-site-packages
+	$ mkvirtualenv venv-librreader --no-site-packages
 
 Checkout your fork and then run the tests:
 
@@ -54,12 +54,6 @@ Now hack away! Write tests which show that a bug was fixed or that the feature w
 
 ## Thanks
 
-Originally created with help from:
+Originally created from:
 
-[http://blog.martindoms.com/2009/08/15/using-the-google-reader-api-part-1/]()
-
-[http://code.google.com/p/pyrfeed/wiki/GoogleReaderAPI]()
-
-[http://groups.google.com/group/fougrapi]()
-
-Since then, [many have contributed to the development of libgreader](https://github.com/askedrelic/libgreader/blob/master/AUTHORS.md).
+[https://github.com/askedrelic/libgreader/](libgreader)
