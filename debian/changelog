@@ -1,0 +1,5 @@
+librssreader (0.0.8-1) smurf; urgency=low
+
+  * source package automatically created by stdeb 0.8.2
+
+ -- Matthias Urlichs <matthias@urlichs.de>  Fri, 04 Sep 2015 13:36:47 +0200

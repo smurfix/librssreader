@@ -1,0 +1,32 @@
+Source: librssreader
+Maintainer: Matthias Urlichs <matthias@urlichs.de>
+Section: python
+Priority: optional
+Build-Depends: python3-setuptools, python3-all, debhelper (>= 9)
+Standards-Version: 3.9.1
+
+Package: python3-librssreader
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: Library for working with the Google Reader Like API
+ # ReadMe
+ librssreader is based on the original work libgreader from Matthew Behrens <askedrelic@gmail.com>. And it is developer oriented python package. With simple configuration changes and little codes, we hope it would support all Google Reader Api Like Rss Readers like 'Inoreader/The old Reader/Feedly' etc. RSS Reader ain't dead yet! The library will support inoreader by default, and will be easy to extend to support other Rss Reader.
+ .
+ libgreader is a basic configurable Python library for authenticating and interacting with the unofficial Google Reader API. It currently supports all major user authentication methods (ClientLogin, OAuth2) and aims to simplify the many features that Google Reader offers.
+ .
+ Licensed under the MIT license: [http://www.opensource.org/licenses/mit-license.php]()
+ .
+ ## Features
+ .
+ * Support for all Google recommended authentication methods, for easy integration with existing web or desktop applications
+ * Explanation of most of the Google Reader API endpoints, which Google has never really opened up
+ * Convenient functions and models for working with those endpoints
+ * A modest integration test suite!
+ .
+ ## Usage
+ .
+ It's as simple as:
+ .
+ .
+ 	>>> from librssreader.inoreader import RssReader, ClientAuthMethod, Item
+
