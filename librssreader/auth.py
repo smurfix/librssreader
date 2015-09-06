@@ -55,23 +55,24 @@ class ClientAuthMethod(AuthenticationMethod):
     Auth type which requires a valid Google Reader username and password
     """
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, app_id, app_key):
         super(ClientAuthMethod, self).__init__()
         self.username   = username
         self.password   = password
+        self.app_id     = app_id
+        self.app_key    = app_key
         self.auth_token = self._getAuth()
-        self.token      = self._getToken()
-
-    def postParameters(self, post=None):
-        post.update({'T': self.token})
-        return super(ClientAuthMethod, self).postParameters(post)
 
     def get(self, url, parameters=None):
         """
         Convenience method for requesting to google with proper cookies/params.
         """
         getString = self.getParameters(parameters)
-        headers = {'Authorization':'GoogleLogin auth=%s' % self.auth_token}
+        headers = {
+            'Authorization':'GoogleLogin auth='+ self.auth_token,
+            'AppID':self.app_id,
+            'AppKey':self.app_key,
+            }
         req = requests.get(url + "?" + getString, headers=headers)
         return req.text
 
@@ -81,9 +82,11 @@ class ClientAuthMethod(AuthenticationMethod):
         """
         if urlParameters:
             url = url + "?" + self.getParameters(urlParameters)
-        headers = {'Authorization':'GoogleLogin auth=%s' % self.auth_token,
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                    }
+        headers = {'Authorization':'GoogleLogin auth='+ self.auth_token,
+                   'Content-Type': 'application/x-www-form-urlencoded',
+                   'AppID':self.app_id,
+                   'AppKey':self.app_key,
+                  }
         postString = self.postParameters(postParameters)
         req = requests.post(url, data=postString, headers=headers)
         return req.text
@@ -108,19 +111,6 @@ class ClientAuthMethod(AuthenticationMethod):
         #Strip newline and non token text.
         token_dict = dict(x.split('=') for x in data.split('\n') if x)
         return token_dict["Auth"]
-
-    def _getToken(self):
-        """
-        Second step in authorizing with Reader.
-        Sends authorized request to Reader token URL and returns a token value.
-
-        Returns token or raises IOError on error.
-        """
-        headers = {'Authorization':'GoogleLogin auth=%s' % self.auth_token}
-        req = requests.get(ReaderBasicConfig.API_URL + 'token', headers=headers)
-        if req.status_code != 200:
-            raise IOError("Error getting the Reader token.")
-        return req.content
 
 class OAuthMethod(AuthenticationMethod):
     """
