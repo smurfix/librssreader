@@ -14,5 +14,5 @@ def getBasicConfig():
         finally:
             cur_f = cur_f.f_back
     if ReaderBasicConfig is None:
-        from inoreaderconfig import ReaderBasicConfig
+        from .inoreaderconfig import ReaderBasicConfig
     return ReaderBasicConfig
