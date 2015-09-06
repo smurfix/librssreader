@@ -135,7 +135,7 @@ class RssReader(object):
 
         return True
 
-    def _getFeedContent(self, url, excludeRead=False, continuation=None, loadLimit=20, since=None, until=None):
+    def _getFeedContent(self, url, excludeRead=False, continuation=None, loadLimit=20, since=None, until=None, oldest_first=False):
         """
         A list of items (from a feed, a category or from URLs made with SPECIAL_ITEMS_URL)
 
@@ -160,6 +160,8 @@ class RssReader(object):
             parameters['ot'] = since
         if until:
             parameters['nt'] = until
+        if oldest_first:
+            parameters['r'] = 'o'
         contentJson = self.httpGet(url, parameters)
         return json.loads(contentJson, strict=False)
 
@@ -169,17 +171,17 @@ class RssReader(object):
             objects.append(Item(self, item, parent))
         return objects
 
-    def getFeedContent(self, feed, excludeRead=False, continuation=None, loadLimit=20, since=None, until=None):
+    def getFeedContent(self, feed, excludeRead=False, continuation=None, loadLimit=20, since=None, until=None, oldest_first=False):
         """
         Return items for a particular feed
         """
-        return self._getFeedContent(feed.fetchUrl, excludeRead, continuation, loadLimit, since, until)
+        return self._getFeedContent(feed.fetchUrl, excludeRead, continuation, loadLimit, since, until, oldest_first)
 
-    def getCategoryContent(self, category, excludeRead=False, continuation=None, loadLimit=20, since=None, until=None):
+    def getCategoryContent(self, category, excludeRead=False, continuation=None, loadLimit=20, since=None, until=None, oldest_first=False):
         """
         Return items for a particular category
         """
-        return self._getFeedContent(category.fetchUrl, excludeRead, continuation, loadLimit, since, until)
+        return self._getFeedContent(category.fetchUrl, excludeRead, continuation, loadLimit, since, until, oldest_first)
 
     def _modifyItemTag(self, item_id, action, tag):
         """ wrapper around actual HTTP POST string for modify tags """
