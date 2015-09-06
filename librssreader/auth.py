@@ -48,7 +48,7 @@ class AuthenticationMethod(object):
         return urlencode(parameters)
 
     def postParameters(self, post=None):
-        return post
+        return post or {}
 
 class ClientAuthMethod(AuthenticationMethod):
     """
@@ -103,10 +103,9 @@ class ClientAuthMethod(AuthenticationMethod):
         Returns Auth token or raises IOError on error.
         """
         parameters = {
-            'service'     : 'reader',
             'Email'       : self.username,
             'Passwd'      : self.password,
-            'accountType' : 'GOOGLE'}
+            }
         req = requests.post(ReaderBasicConfig.CLIENT_URL, data=parameters)
         if req.status_code != 200:
             raise IOError("Error %s getting the Auth token, have you entered a "
