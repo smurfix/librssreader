@@ -74,6 +74,8 @@ class ClientAuthMethod(AuthenticationMethod):
             'AppKey':self.app_key,
             }
         req = requests.get(url + "?" + getString, headers=headers)
+        if req.status_code >= 400:
+            raise IOError(req.reason)
         return req.text
 
     def post(self, url, postParameters=None, urlParameters=None):
@@ -89,6 +91,8 @@ class ClientAuthMethod(AuthenticationMethod):
                   }
         postString = self.postParameters(postParameters)
         req = requests.post(url, data=postString, headers=headers)
+        if req.status_code >= 400:
+            raise IOError(req.reason)
         return req.text
 
     def _getAuth(self):
@@ -105,8 +109,8 @@ class ClientAuthMethod(AuthenticationMethod):
             'accountType' : 'GOOGLE'}
         req = requests.post(ReaderBasicConfig.CLIENT_URL, data=parameters)
         if req.status_code != 200:
-            raise IOError("Error getting the Auth token, have you entered a"
-                    "correct username and password?")
+            raise IOError("Error %s getting the Auth token, have you entered a "
+                    "correct username and password?" % (req.status_code,))
         data = req.text
         #Strip newline and non token text.
         token_dict = dict(x.split('=') for x in data.split('\n') if x)
